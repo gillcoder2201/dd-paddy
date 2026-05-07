@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DD Seeds Karnal - Full Control</title>
+    <title>DD Seeds Karnal - Payment Pro</title>
     <style>
         :root { --primary: #1b5e20; --accent: #2e7d32; --blue: #1565c0; --bg: #eceff1; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
@@ -26,6 +26,10 @@
         .summary-box { background: #e8f5e9; padding: 15px; border-radius: 10px; margin: 10px; border: 1px solid #c8e6c9; }
         .grand-total { font-size: 22px; color: var(--primary); font-weight: 900; float: right; }
         .history-card { background: white; border-left: 5px solid var(--blue); padding: 10px; margin-bottom: 8px; border-radius: 5px; display: flex; justify-content: space-between; font-size: 13px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; margin-top: 4px; display: inline-block; }
+        .tag-cash { background: #c8e6c9; color: #2e7d32; }
+        .tag-upi { background: #bbdefb; color: #1565c0; }
+        .tag-udhaar { background: #ffcdd2; color: #c62828; }
         #printHeader { display: none; }
         @media print {
             body { background: white; padding: 0; }
@@ -61,6 +65,14 @@
         <div class="grid-row">
             <input type="text" id="fName" placeholder="Farmer Name">
             <input type="text" id="fVillage" placeholder="Village">
+        </div>
+        <div class="form-group">
+            <label style="font-size: 10px; font-weight: bold; color: #546e7a;">PAYMENT MODE</label>
+            <select id="payMode">
+                <option value="Cash">CASH (NAGAD)</option>
+                <option value="UPI">UPI (ONLINE)</option>
+                <option value="Udhaar">UDHAAR (PENDING)</option>
+            </select>
         </div>
     </div>
 
@@ -106,7 +118,7 @@
 
 <script>
     let currentItems = [];
-    let billHistory = JSON.parse(localStorage.getItem('dd_pro_v3')) || [];
+    let billHistory = JSON.parse(localStorage.getItem('dd_pro_v4')) || [];
 
     window.onload = function() {
         document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
@@ -144,11 +156,14 @@
         const bDate = document.getElementById('billDate').value;
         const fName = document.getElementById('fName').value || "Customer";
         const fVill = document.getElementById('fVillage').value || "-";
-        document.getElementById('pInfoLeft').innerHTML = `Bill No: ${bNo}<br>Date: ${bDate}`;
+        const pMode = document.getElementById('payMode').value;
+
+        document.getElementById('pInfoLeft').innerHTML = `Bill No: ${bNo}<br>Date: ${bDate}<br>Payment: ${pMode.toUpperCase()}`;
         document.getElementById('pInfoRight').innerHTML = `Farmer: ${fName}<br>Village: ${fVill}`;
-        const bill = { no: bNo, date: bDate, name: fName, village: fVill, items: [...currentItems], total: document.getElementById('dispAmt').innerText };
+
+        const bill = { no: bNo, date: bDate, name: fName, village: fVill, mode: pMode, items: [...currentItems], total: document.getElementById('dispAmt').innerText };
         billHistory.unshift(bill);
-        localStorage.setItem('dd_pro_v3', JSON.stringify(billHistory.slice(0,50)));
+        localStorage.setItem('dd_pro_v4', JSON.stringify(billHistory.slice(0,50)));
         window.print();
         renderHistory();
     }
@@ -157,8 +172,9 @@
         const list = document.getElementById('historyList');
         list.innerHTML = billHistory.length === 0 ? "<p style='text-align:center;color:#999;'>No history</p>" : "";
         billHistory.forEach((b, i) => {
+            const tagClass = b.mode === 'Cash' ? 'tag-cash' : (b.mode === 'UPI' ? 'tag-upi' : 'tag-udhaar');
             list.innerHTML += `<div class="history-card">
-                <div><b>#${b.no}</b> - ${b.name}</div>
+                <div><b>#${b.no}</b> - ${b.name}<br><span class="tag ${tagClass}">${b.mode}</span></div>
                 <div style="text-align:right"><b>${b.total}</b><br><button onclick="viewBill(${i})" style="border:none; background:none; color:blue; font-size:10px; cursor:pointer;">Load</button></div>
             </div>`;
         });
@@ -170,6 +186,7 @@
         document.getElementById('billDate').value = b.date;
         document.getElementById('fName').value = b.name;
         document.getElementById('fVillage').value = b.village;
+        document.getElementById('payMode').value = b.mode || 'Cash';
         currentItems = [...b.items];
         updateTable();
         window.scrollTo(0,0);
@@ -183,9 +200,9 @@
     }
 
     function deleteFullHistory() {
-        if(confirm("Khatra! Kya aap sach mein pichle saare save kiye gaye bills mita dena chahte hain?")) {
+        if(confirm("Khatra! Kya aap sach mein pichle saare bills mita dena chahte hain?")) {
             billHistory = [];
-            localStorage.removeItem('dd_pro_v3');
+            localStorage.removeItem('dd_pro_v4');
             renderHistory();
         }
     }
