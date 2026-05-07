@@ -2,38 +2,54 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DD Seeds Karnal - Billing System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DD Seeds Karnal - Billing</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: #333; }
-        .container { max-width: 600px; background: #fff; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .header { text-align: center; border-bottom: 2px solid #2e7d32; margin-bottom: 20px; padding-bottom: 10px; }
-        .shop-name { font-size: 26px; font-weight: bold; color: #2e7d32; margin: 0; }
-        .address { font-size: 13px; color: #555; margin: 5px 0; }
+        :root { --primary: #2e7d32; --secondary: #1976d2; --bg: #f8f9fa; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
         
-        .input-section { background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
-        .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .form-group { flex: 1; display: flex; flex-direction: column; }
-        label { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #666; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .container { max-width: 100%; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         
-        .btn-add { width: 100%; background: #1976d2; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
-        th { background: #2e7d32; color: white; padding: 10px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-        
-        .bill-footer { margin-top: 20px; padding: 15px; background: #eee; border-radius: 8px; text-align: right; }
-        .grand-total { font-size: 20px; font-weight: bold; color: #2e7d32; }
-        
-        .btn-print { width: 100%; background: #2e7d32; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        
-        .farmer-info { margin-bottom: 15px; }
+        /* Header & Address */
+        .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #ddd; }
+        .shop-name { font-size: 22px; font-weight: 800; color: var(--primary); margin: 0; }
+        .address { font-size: 12px; color: #666; margin: 4px 0; line-height: 1.4; }
 
+        /* Farmer Info Section */
+        .section-title { font-size: 14px; font-weight: bold; color: #444; margin-bottom: 8px; border-left: 4px solid var(--primary); padding-left: 8px; }
+        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        
+        .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
+        label { font-size: 12px; margin-bottom: 4px; color: #555; font-weight: 600; }
+        input, select { height: 45px; border: 1px solid #ccc; border-radius: 8px; padding: 0 10px; font-size: 16px; -webkit-appearance: none; }
+        
+        /* Buttons */
+        .btn-add { background: var(--secondary); color: white; border: none; height: 50px; border-radius: 8px; font-weight: bold; font-size: 16px; width: 100%; cursor: pointer; margin-top: 5px; }
+        .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; font-weight: bold; font-size: 18px; width: 100%; margin-top: 20px; box-shadow: 0 4px 12px rgba(46,125,50,0.3); }
+
+        /* Table Responsive */
+        .table-wrapper { width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid #eee; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        th { background: #f4f4f4; padding: 12px 8px; text-align: left; font-size: 13px; }
+        td { padding: 12px 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+        /* Footer/Grand Total */
+        .bill-summary { background: #fff; border: 2px solid var(--primary); border-radius: 10px; margin-top: 20px; padding: 15px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 15px; }
+        .grand-total { font-size: 20px; font-weight: bold; color: var(--primary); border-top: 1px solid #eee; pt: 8px; margin-top: 8px; }
+
+        /* Print/Receipt Layout */
         @media print {
-            .input-section, .btn-print, .action-col { display: none; }
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; max-width: 100%; }
+            .btn-add, .btn-print, .action-col, .input-area, label[for="qty"], label[for="rate"], #qty, #rate, #variety, #packing, .section-title:nth-of-type(2) { 
+                display: none !important; 
+            }
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; padding: 0; }
+            .table-wrapper { border: none; overflow: visible; }
+            table { min-width: 100%; border: 1px solid #000; }
+            th, td { border: 1px solid #ddd; }
+            .header { border-bottom: 2px solid #000; }
+            .bill-summary { border: 1px solid #000; }
         }
     </style>
 </head>
@@ -44,27 +60,25 @@
         <p class="shop-name">DD SEEDS KARNAL</p>
         <p class="address">
             VPO Shahpur Jajan, Tehsil Dera Baba Nanak<br>
-            Distt Gurdaspur - 143604 (Punjab)
+            Distt Gurdaspur - 143604 (Pb.)
         </p>
     </div>
 
-    <div class="farmer-info">
-        <div class="form-row">
-            <div class="form-group">
-                <label>Farmer Name:</label>
-                <input type="text" id="farmerName" placeholder="Kisan ka naam">
-            </div>
-            <div class="form-group">
-                <label>Village:</label>
-                <input type="text" id="village" placeholder="Gaon">
-            </div>
+    <div class="section-title">Farmer Details</div>
+    <div class="grid-row">
+        <div class="form-group">
+            <input type="text" id="farmerName" placeholder="Farmer Name">
+        </div>
+        <div class="form-group">
+            <input type="text" id="village" placeholder="Village">
         </div>
     </div>
 
-    <div class="input-section">
-        <div class="form-group" style="margin-bottom:10px;">
-            <label>Select Variety:</label>
+    <div class="input-area">
+        <div class="section-title">Add Items</div>
+        <div class="form-group">
             <select id="variety">
+                <option value="" disabled selected>Select Variety</option>
                 <optgroup label="PR Varieties">
                     <option>PR - 128</option><option>PR - 131</option>
                     <option>110</option><option>HKR - 47</option>
@@ -76,46 +90,50 @@
                 </optgroup>
             </select>
         </div>
-        <div class="form-row">
+        <div class="grid-row">
             <div class="form-group">
-                <label>Packing:</label>
                 <select id="packing">
                     <option value="4">4 KG</option>
                     <option value="10">10 KG</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Bags:</label>
-                <input type="number" id="qty" value="1" min="1">
-            </div>
-            <div class="form-group">
-                <label>Rate/KG:</label>
-                <input type="number" id="rate" placeholder="0">
+                <input type="number" id="qty" placeholder="Bags">
             </div>
         </div>
-        <button class="btn-add" onclick="addItem()">+ Add to Bill</button>
+        <div class="form-group">
+            <input type="number" id="rate" placeholder="Rate Per KG (₹)">
+        </div>
+        <button class="btn-add" onclick="addItem()">+ Add To Bill</button>
     </div>
 
-    <table id="billTable">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Total Wt</th>
-                <th>Amount</th>
-                <th class="action-col"></th>
-            </tr>
-        </thead>
-        <tbody id="billBody">
-            </tbody>
-    </table>
-
-    <div class="bill-footer">
-        <div>Total Weight: <span id="finalWeight">0</span> KG</div>
-        <div class="grand-total">Grand Total: ₹ <span id="finalAmount">0.00</span></div>
+    <div class="table-wrapper">
+        <table id="billTable">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Weight</th>
+                    <th>Amount</th>
+                    <th class="action-col"></th>
+                </tr>
+            </thead>
+            <tbody id="billBody"></tbody>
+        </table>
     </div>
 
-    <button class="btn-print" onclick="window.print()">Print Bill / PDF</button>
+    <div class="bill-summary">
+        <div class="summary-row">
+            <span>Total Weight:</span>
+            <span id="finalWeight">0 KG</span>
+        </div>
+        <div class="summary-row grand-total">
+            <span>Grand Total:</span>
+            <span id="finalAmount">₹ 0.00</span>
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
 </div>
 
 <script>
@@ -127,20 +145,19 @@
         const qty = parseFloat(document.getElementById('qty').value) || 0;
         const rate = parseFloat(document.getElementById('rate').value) || 0;
 
-        if(qty <= 0 || rate <= 0) {
-            alert("Please enter valid Quantity and Rate");
+        if(!variety || qty <= 0 || rate <= 0) {
+            alert("Variety, Qty aur Rate sahi bharein!");
             return;
         }
 
         const totalWt = packing * qty;
         const totalAmt = totalWt * rate;
 
-        const item = { variety, packing, qty, totalWt, totalAmt };
-        items.push(item);
+        items.push({ variety, packing, qty, totalWt, totalAmt });
         updateTable();
         
-        // Reset fields for next item
-        document.getElementById('qty').value = 1;
+        // Reset only item fields
+        document.getElementById('qty').value = "";
         document.getElementById('rate').value = "";
     }
 
@@ -159,18 +176,17 @@
             gWeight += item.totalWt;
             gAmount += item.totalAmt;
 
-            const row = `<tr>
-                <td>${item.variety} (${item.packing}kg)</td>
+            tbody.innerHTML += `<tr>
+                <td>${item.variety}<br><small>${item.packing}kg pack</small></td>
                 <td>${item.qty}</td>
-                <td>${item.totalWt} kg</td>
+                <td>${item.totalWt}kg</td>
                 <td>₹${item.totalAmt.toFixed(2)}</td>
-                <td class="action-col"><button onclick="removeItem(${index})" style="color:red; border:none; background:none; cursor:pointer;">✖</button></td>
+                <td class="action-col"><button onclick="removeItem(${index})" style="background:none; border:none; color:red; font-size:18px;">✕</button></td>
             </tr>`;
-            tbody.innerHTML += row;
         });
 
-        document.getElementById('finalWeight').innerText = gWeight;
-        document.getElementById('finalAmount').innerText = gAmount.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        document.getElementById('finalWeight').innerText = gWeight + " KG";
+        document.getElementById('finalAmount').innerText = "₹ " + gAmount.toLocaleString('en-IN', {minimumFractionDigits: 2});
     }
 </script>
 
