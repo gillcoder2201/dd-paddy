@@ -3,32 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DD Seeds Karnal - Paddy Calculator</title>
+    <title>DD Seeds Karnal - Billing System</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; }
-        .container { max-width: 450px; background: #fff; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 6px solid #2e7d32; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: #333; }
+        .container { max-width: 600px; background: #fff; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #2e7d32; margin-bottom: 20px; padding-bottom: 10px; }
+        .shop-name { font-size: 26px; font-weight: bold; color: #2e7d32; margin: 0; }
+        .address { font-size: 13px; color: #555; margin: 5px 0; }
         
-        .header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
-        .shop-name { font-size: 24px; font-weight: bold; color: #2e7d32; margin: 0; text-transform: uppercase; }
-        .address { font-size: 13px; color: #666; margin: 5px 0; line-height: 1.4; }
+        .input-section { background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        label { font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #666; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
         
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; font-size: 14px; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: 0.3s; }
-        select:focus, input:focus { border-color: #2e7d32; outline: none; box-shadow: 0 0 5px rgba(46,125,50,0.2); }
+        .btn-add { width: 100%; background: #1976d2; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
         
-        .result-box { background: #f1f8e9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #c8e6c9; }
-        .result-line { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; }
-        .total-label { color: #555; }
-        .total-val { font-weight: 800; color: #1b5e20; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        th { background: #2e7d32; color: white; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
         
-        .btn-print { width: 100%; background: #2e7d32; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-print:hover { background: #1b5e20; }
+        .bill-footer { margin-top: 20px; padding: 15px; background: #eee; border-radius: 8px; text-align: right; }
+        .grand-total { font-size: 20px; font-weight: bold; color: #2e7d32; }
+        
+        .btn-print { width: 100%; background: #2e7d32; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        
+        .farmer-info { margin-bottom: 15px; }
 
         @media print {
-            .btn-print { display: none; }
+            .input-section, .btn-print, .action-col { display: none; }
             body { background: white; padding: 0; }
-            .container { box-shadow: none; border: 1px solid #eee; }
+            .container { box-shadow: none; width: 100%; max-width: 100%; }
         }
     </style>
 </head>
@@ -43,67 +48,129 @@
         </p>
     </div>
 
-    <div class="form-group">
-        <label>Seed Variety:</label>
-        <select id="variety" onchange="calculate()">
-            <optgroup label="PR Varieties">
-                <option value="PR-128">PR - 128</option>
-                <option value="PR-131">PR - 131</option>
-                <option value="110">110</option>
-                <option value="HKR-47">HKR - 47</option>
-            </optgroup>
-            <optgroup label="Basmati Varieties">
-                <option value="PUSA 1121">PUSA Basmati 1121</option>
-                <option value="PUSA 1718">PUSA Basmati 1718</option>
-                <option value="PUSA 1692">PUSA Basmati 1692</option>
-            </optgroup>
-        </select>
+    <div class="farmer-info">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Farmer Name:</label>
+                <input type="text" id="farmerName" placeholder="Kisan ka naam">
+            </div>
+            <div class="form-group">
+                <label>Village:</label>
+                <input type="text" id="village" placeholder="Gaon">
+            </div>
+        </div>
     </div>
 
-    <div class="form-group" style="display: flex; gap: 10px;">
-        <div style="flex: 1;">
-            <label>Packing (KG):</label>
-            <select id="packing" onchange="calculate()">
-                <option value="4">4 KG</option>
-                <option value="10">10 KG</option>
+    <div class="input-section">
+        <div class="form-group" style="margin-bottom:10px;">
+            <label>Select Variety:</label>
+            <select id="variety">
+                <optgroup label="PR Varieties">
+                    <option>PR - 128</option><option>PR - 131</option>
+                    <option>110</option><option>HKR - 47</option>
+                </optgroup>
+                <optgroup label="Basmati Varieties">
+                    <option>PUSA Basmati 1121</option>
+                    <option>PUSA Basmati 1718</option>
+                    <option>PUSA Basmati 1692</option>
+                </optgroup>
             </select>
         </div>
-        <div style="flex: 1;">
-            <label>Bags (Quantity):</label>
-            <input type="number" id="qty" placeholder="0" min="0" oninput="calculate()">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Packing:</label>
+                <select id="packing">
+                    <option value="4">4 KG</option>
+                    <option value="10">10 KG</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Bags:</label>
+                <input type="number" id="qty" value="1" min="1">
+            </div>
+            <div class="form-group">
+                <label>Rate/KG:</label>
+                <input type="number" id="rate" placeholder="0">
+            </div>
         </div>
+        <button class="btn-add" onclick="addItem()">+ Add to Bill</button>
     </div>
 
-    <div class="form-group">
-        <label>Rate Per KG (₹):</label>
-        <input type="number" id="rate" placeholder="0.00" oninput="calculate()">
+    <table id="billTable">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Total Wt</th>
+                <th>Amount</th>
+                <th class="action-col"></th>
+            </tr>
+        </thead>
+        <tbody id="billBody">
+            </tbody>
+    </table>
+
+    <div class="bill-footer">
+        <div>Total Weight: <span id="finalWeight">0</span> KG</div>
+        <div class="grand-total">Grand Total: ₹ <span id="finalAmount">0.00</span></div>
     </div>
 
-    <div class="result-box">
-        <div class="result-line">
-            <span class="total-label">Total Weight:</span>
-            <span id="totalWeight" class="total-val">0 KG</span>
-        </div>
-        <div class="result-line" style="border-top: 1px dashed #c8e6c9; padding-top: 10px; margin-top: 5px;">
-            <span class="total-label">Grand Total:</span>
-            <span id="totalAmount" class="total-val">₹ 0.00</span>
-        </div>
-    </div>
-
-    <button class="btn-print" onclick="window.print()">Print Bill / Save PDF</button>
+    <button class="btn-print" onclick="window.print()">Print Bill / PDF</button>
 </div>
 
 <script>
-    function calculate() {
+    let items = [];
+
+    function addItem() {
+        const variety = document.getElementById('variety').value;
         const packing = parseFloat(document.getElementById('packing').value);
         const qty = parseFloat(document.getElementById('qty').value) || 0;
         const rate = parseFloat(document.getElementById('rate').value) || 0;
 
+        if(qty <= 0 || rate <= 0) {
+            alert("Please enter valid Quantity and Rate");
+            return;
+        }
+
         const totalWt = packing * qty;
         const totalAmt = totalWt * rate;
 
-        document.getElementById('totalWeight').innerText = totalWt + " KG";
-        document.getElementById('totalAmount').innerText = "₹ " + totalAmt.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        const item = { variety, packing, qty, totalWt, totalAmt };
+        items.push(item);
+        updateTable();
+        
+        // Reset fields for next item
+        document.getElementById('qty').value = 1;
+        document.getElementById('rate').value = "";
+    }
+
+    function removeItem(index) {
+        items.splice(index, 1);
+        updateTable();
+    }
+
+    function updateTable() {
+        const tbody = document.getElementById('billBody');
+        tbody.innerHTML = "";
+        let gWeight = 0;
+        let gAmount = 0;
+
+        items.forEach((item, index) => {
+            gWeight += item.totalWt;
+            gAmount += item.totalAmt;
+
+            const row = `<tr>
+                <td>${item.variety} (${item.packing}kg)</td>
+                <td>${item.qty}</td>
+                <td>${item.totalWt} kg</td>
+                <td>₹${item.totalAmt.toFixed(2)}</td>
+                <td class="action-col"><button onclick="removeItem(${index})" style="color:red; border:none; background:none; cursor:pointer;">✖</button></td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+
+        document.getElementById('finalWeight').innerText = gWeight;
+        document.getElementById('finalAmount').innerText = gAmount.toLocaleString('en-IN', {minimumFractionDigits: 2});
     }
 </script>
 
