@@ -3,59 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DD Seeds Karnal - Billing System</title>
+    <title>DD Seeds Karnal - Billing & History</title>
     <style>
         :root { --primary: #2e7d32; --secondary: #1976d2; --bg: #f8f9fa; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; }
-        
         .container { max-width: 500px; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
-        
-        /* Header */
         .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #ddd; }
         .shop-name { font-size: 24px; font-weight: 800; color: var(--primary); margin: 0; }
         .address { font-size: 12px; color: #666; margin: 4px 0; line-height: 1.4; }
-
         .section-title { font-size: 14px; font-weight: bold; color: #444; margin: 15px 0 8px 0; border-left: 4px solid var(--primary); padding-left: 8px; }
-        
-        /* Layout Grid */
         .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        
         .form-group { display: flex; flex-direction: column; width: 100%; }
-        label { font-size: 11px; font-weight: bold; color: #777; margin-bottom: 2px; text-transform: uppercase; }
+        label { font-size: 11px; font-weight: bold; color: #777; margin-bottom: 2px; }
         input, select { height: 45px; border: 1px solid #ccc; border-radius: 8px; padding: 0 10px; font-size: 15px; box-sizing: border-box; width: 100%; outline: none; }
-        input:focus { border-color: var(--primary); }
-
-        /* Buttons */
         .btn-add { background: var(--secondary); color: white; border: none; height: 48px; border-radius: 8px; font-weight: bold; font-size: 16px; width: 100%; cursor: pointer; margin-top: 5px; }
         .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; font-weight: bold; font-size: 18px; width: 100%; margin-top: 20px; cursor: pointer; }
+        .btn-history { background: #546e7a; color: white; border: none; height: 45px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; }
         .btn-clear { background: #f44336; color: white; border: none; height: 40px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; opacity: 0.8; }
-
-        /* Table */
         .table-wrapper { width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; min-width: 100%; }
         th { background: #f4f4f4; padding: 10px; text-align: left; font-size: 12px; }
         td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-
-        /* Summary Box */
         .bill-summary { background: #fff; border: 2px solid var(--primary); border-radius: 10px; margin-top: 20px; padding: 15px; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
         .grand-total { font-size: 20px; font-weight: bold; color: var(--primary); border-top: 1px solid #eee; padding-top: 8px; margin-top: 5px; }
-
-        /* Print Settings */
+        
+        /* History Styles */
+        .history-section { margin-top: 30px; border-top: 2px solid #ddd; pt: 20px; }
+        .history-card { background: #fdfdfd; border: 1px solid #ddd; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+        
         @media print {
-            .btn-add, .btn-print, .btn-clear, .action-col, .input-area-box, .section-title:nth-of-type(2) { display: none !important; }
+            .btn-add, .btn-print, .btn-clear, .btn-history, .action-col, .input-area-box, .history-section, .section-title:nth-of-type(2) { display: none !important; }
             body { background: white; padding: 0; }
             .container { box-shadow: none; max-width: 100%; width: 100%; padding: 0; }
-            input, select { border: none; padding: 0; height: auto; font-weight: bold; }
-            .header { border-bottom: 2px solid #000; }
-            table { border: 1px solid #000; }
-            .bill-summary { border: 1px solid #000; }
         }
-
-        /* Mobile Adjustments */
-        @media (max-width: 400px) {
-            .grid-row { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 400px) { .grid-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -68,134 +50,74 @@
 
     <div class="section-title">Bill & Farmer Info</div>
     <div class="grid-row">
-        <div class="form-group">
-            <label>Bill No.</label>
-            <input type="number" id="billNo" placeholder="1">
-        </div>
-        <div class="form-group">
-            <label>Date</label>
-            <input type="date" id="billDate">
-        </div>
+        <div class="form-group"><label>Bill No.</label><input type="number" id="billNo"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="billDate"></div>
     </div>
     <div class="grid-row">
-        <div class="form-group">
-            <label>Farmer Name</label>
-            <input type="text" id="farmerName" placeholder="Kisan ka naam">
-        </div>
-        <div class="form-group">
-            <label>Village</label>
-            <input type="text" id="village" placeholder="Gaon">
-        </div>
+        <div class="form-group"><label>Farmer Name</label><input type="text" id="farmerName" placeholder="Name"></div>
+        <div class="form-group"><label>Village</label><input type="text" id="village" placeholder="Village"></div>
     </div>
 
     <div class="input-area-box">
         <div class="section-title">Add Items</div>
-        <div class="form-group" style="margin-bottom:10px;">
-            <label>Variety</label>
-            <select id="variety">
-                <option value="" disabled selected>Select Variety</option>
-                <optgroup label="PR Varieties">
-                    <option>PR - 128</option><option>PR - 131</option><option>110</option><option>HKR - 47</option>
-                </optgroup>
-                <optgroup label="Basmati Varieties">
-                    <option>PUSA Basmati 1121</option><option>PUSA Basmati 1718</option><option>PUSA Basmati 1692</option>
-                </optgroup>
-            </select>
-        </div>
-        
+        <select id="variety" style="margin-bottom:10px;">
+            <option value="" disabled selected>Select Variety</option>
+            <optgroup label="PR Varieties"><option>PR - 128</option><option>PR - 131</option><option>110</option><option>HKR - 47</option></optgroup>
+            <optgroup label="Basmati Varieties"><option>PUSA Basmati 1121</option><option>PUSA Basmati 1718</option><option>PUSA Basmati 1692</option></optgroup>
+        </select>
         <div class="grid-row">
-            <div class="form-group">
-                <label>Packing</label>
-                <select id="packing">
-                    <option value="4">4 KG</option>
-                    <option value="10">10 KG</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Bags</label>
-                <input type="number" id="qty" placeholder="0">
-            </div>
+            <select id="packing"><option value="4">4 KG</option><option value="10">10 KG</option></select>
+            <input type="number" id="qty" placeholder="Bags">
         </div>
-
-        <div class="form-group" style="margin-bottom:10px;">
-            <label>Rate Per KG (₹)</label>
-            <input type="number" id="rate" placeholder="0.00">
-        </div>
-        
+        <input type="number" id="rate" placeholder="Rate Per KG (₹)" style="margin-top:10px;">
         <button class="btn-add" onclick="addItem()">+ Add To Bill</button>
     </div>
 
     <div class="table-wrapper">
         <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Weight</th>
-                    <th>Total</th>
-                    <th class="action-col"></th>
-                </tr>
-            </thead>
+            <thead><tr><th>Item</th><th>Qty</th><th>Wt</th><th>Total</th><th class="action-col"></th></tr></thead>
             <tbody id="billBody"></tbody>
         </table>
     </div>
 
     <div class="bill-summary">
-        <div class="summary-row">
-            <span>Total Weight:</span>
-            <span id="finalWeight">0 KG</span>
-        </div>
-        <div class="summary-row grand-total">
-            <span>Grand Total:</span>
-            <span id="finalAmount">₹ 0.00</span>
-        </div>
+        <div class="summary-row"><span>Total Weight:</span><span id="finalWeight">0 KG</span></div>
+        <div class="summary-row grand-total"><span>Grand Total:</span><span id="finalAmount">₹ 0.00</span></div>
     </div>
 
-    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
-    <button class="btn-clear" onclick="clearBill()">New Bill (Clear)</button>
+    <button class="btn-print" onclick="printAndSave()">Print & Save to History</button>
+    <button class="btn-clear" onclick="clearBill()">New Bill (Reset)</button>
+
+    <div class="history-section">
+        <div class="section-title">Saved Bill History</div>
+        <div id="historyList"></div>
+        <button onclick="clearHistory()" style="font-size:10px; color:red; background:none; border:none; width:100%; cursor:pointer; margin-top:10px;">Clear All History</button>
+    </div>
 </div>
 
 <script>
-    // LocalStorage se data load karna
     let items = JSON.parse(localStorage.getItem('ddSeedsData')) || [];
+    let history = JSON.parse(localStorage.getItem('ddSeedsHistory')) || [];
 
     window.onload = function() {
-        // Default Date
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('billDate').value = localStorage.getItem('fDate') || today;
-        
-        // Purana Data
         document.getElementById('billNo').value = localStorage.getItem('fBillNo') || "1";
         document.getElementById('farmerName').value = localStorage.getItem('fName') || "";
         document.getElementById('village').value = localStorage.getItem('fVillage') || "";
-        
         updateTable();
+        showHistory();
     };
 
     function addItem() {
-        const variety = document.getElementById('variety').value;
-        const packing = parseFloat(document.getElementById('packing').value);
-        const qty = parseFloat(document.getElementById('qty').value) || 0;
-        const rate = parseFloat(document.getElementById('rate').value) || 0;
-
-        if(!variety || qty <= 0 || rate <= 0) { 
-            alert("Variety, Qty aur Rate sahi bharein!"); 
-            return; 
-        }
-
-        const item = { 
-            variety, 
-            packing, 
-            qty, 
-            totalWt: packing * qty, 
-            totalAmt: (packing * qty) * rate 
-        };
-
-        items.push(item);
+        const v = document.getElementById('variety').value;
+        const p = parseFloat(document.getElementById('packing').value);
+        const q = parseFloat(document.getElementById('qty').value) || 0;
+        const r = parseFloat(document.getElementById('rate').value) || 0;
+        if(!v || q <= 0 || r <= 0) { alert("Sahi details bharein!"); return; }
+        items.push({ variety: v, packing: p, qty: q, totalWt: p*q, totalAmt: (p*q)*r });
         saveAndRefresh();
-        
-        document.getElementById('qty').value = ""; 
-        document.getElementById('rate').value = "";
+        document.getElementById('qty').value = ""; document.getElementById('rate').value = "";
     }
 
     function saveAndRefresh() {
@@ -207,49 +129,61 @@
         updateTable();
     }
 
-    // Har change par auto-save
-    document.querySelectorAll('input').forEach(input => {
-        input.oninput = saveAndRefresh;
-    });
-
-    function removeItem(index) {
-        items.splice(index, 1);
-        saveAndRefresh();
-    }
-
     function updateTable() {
-        const tbody = document.getElementById('billBody');
-        tbody.innerHTML = "";
+        const tbody = document.getElementById('billBody'); tbody.innerHTML = "";
         let gW = 0, gA = 0;
-
         items.forEach((item, index) => {
-            gW += item.totalWt;
-            gA += item.totalAmt;
-
-            tbody.innerHTML += `<tr>
-                <td>${item.variety}<br><small>${item.packing}kg</small></td>
-                <td>${item.qty}</td>
-                <td>${item.totalWt}kg</td>
-                <td>₹${item.totalAmt.toFixed(2)}</td>
-                <td class="action-col">
-                    <button onclick="removeItem(${index})" style="border:none; background:none; color:red; font-size:18px; cursor:pointer;">✕</button>
-                </td>
-            </tr>`;
+            gW += item.totalWt; gA += item.totalAmt;
+            tbody.innerHTML += `<tr><td>${item.variety}<br><small>${item.packing}kg</small></td><td>${item.qty}</td><td>${item.totalWt}kg</td><td>₹${item.totalAmt.toFixed(2)}</td><td class="action-col"><button onclick="removeItem(${index})" style="border:none; background:none; color:red;">✕</button></td></tr>`;
         });
-
         document.getElementById('finalWeight').innerText = gW + " KG";
         document.getElementById('finalAmount').innerText = "₹ " + gA.toLocaleString('en-IN', {minimumFractionDigits: 2});
     }
 
+    function printAndSave() {
+        if(items.length === 0) { alert("Bill khali hai!"); return; }
+        
+        // History mein save karein
+        const billRecord = {
+            no: document.getElementById('billNo').value,
+            name: document.getElementById('farmerName').value || "Unknown",
+            amount: document.getElementById('finalAmount').innerText,
+            date: document.getElementById('billDate').value
+        };
+        history.unshift(billRecord); // Naya bill sabse upar
+        localStorage.setItem('ddSeedsHistory', JSON.stringify(history));
+        
+        window.print();
+        showHistory();
+    }
+
+    function showHistory() {
+        const hList = document.getElementById('historyList');
+        hList.innerHTML = history.length === 0 ? "<p style='font-size:12px; color:#999; text-align:center;'>No saved bills</p>" : "";
+        history.forEach(bill => {
+            hList.innerHTML += `<div class="history-card">
+                <div><b>#${bill.no}</b> - ${bill.name}<br><small>${bill.date}</small></div>
+                <div style="color:var(--primary); font-weight:bold;">${bill.amount}</div>
+            </div>`;
+        });
+    }
+
+    function removeItem(i) { items.splice(i, 1); saveAndRefresh(); }
+
     function clearBill() {
-        if(confirm("Naya Bill shuru karein? Purana record delete ho jayega.")) {
-            let nextBill = parseInt(document.getElementById('billNo').value) + 1;
-            localStorage.clear();
-            localStorage.setItem('fBillNo', nextBill);
+        if(confirm("Naya Bill?")) {
+            let next = parseInt(document.getElementById('billNo').value) + 1;
+            items = []; localStorage.removeItem('ddSeedsData');
+            localStorage.setItem('fBillNo', next);
             location.reload();
         }
     }
-</script>
 
+    function clearHistory() {
+        if(confirm("Saara history record mita dein?")) {
+            history = []; localStorage.removeItem('ddSeedsHistory'); showHistory();
+        }
+    }
+</script>
 </body>
 </html>
