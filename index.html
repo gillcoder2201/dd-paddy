@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -8,48 +8,39 @@
         :root { --primary: #2e7d32; --secondary: #1976d2; --bg: #f8f9fa; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
         
-        .container { max-width: 100%; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .container { max-width: 500px; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
         
-        /* Header & Address */
         .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #ddd; }
         .shop-name { font-size: 22px; font-weight: 800; color: var(--primary); margin: 0; }
         .address { font-size: 12px; color: #666; margin: 4px 0; line-height: 1.4; }
 
-        /* Farmer Info Section */
         .section-title { font-size: 14px; font-weight: bold; color: #444; margin-bottom: 8px; border-left: 4px solid var(--primary); padding-left: 8px; }
-        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         
-        .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
-        label { font-size: 12px; margin-bottom: 4px; color: #555; font-weight: 600; }
-        input, select { height: 45px; border: 1px solid #ccc; border-radius: 8px; padding: 0 10px; font-size: 16px; -webkit-appearance: none; }
+        /* FIX: Mobile Responsive Grid */
+        .grid-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px; }
+        @media (min-width: 450px) {
+            .grid-row { grid-template-columns: 1fr 1fr; }
+        }
         
-        /* Buttons */
+        .form-group { display: flex; flex-direction: column; width: 100%; }
+        input, select { height: 48px; border: 1px solid #ccc; border-radius: 8px; padding: 0 12px; font-size: 16px; box-sizing: border-box; width: 100%; -webkit-appearance: none; }
+        
         .btn-add { background: var(--secondary); color: white; border: none; height: 50px; border-radius: 8px; font-weight: bold; font-size: 16px; width: 100%; cursor: pointer; margin-top: 5px; }
-        .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; font-weight: bold; font-size: 18px; width: 100%; margin-top: 20px; box-shadow: 0 4px 12px rgba(46,125,50,0.3); }
+        .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; font-weight: bold; font-size: 18px; width: 100%; margin-top: 20px; }
 
-        /* Table Responsive */
         .table-wrapper { width: 100%; overflow-x: auto; margin-top: 20px; border: 1px solid #eee; border-radius: 8px; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th { background: #f4f4f4; padding: 12px 8px; text-align: left; font-size: 13px; }
-        td { padding: 12px 8px; border-bottom: 1px solid #eee; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 100%; }
+        th { background: #f4f4f4; padding: 12px 8px; text-align: left; font-size: 12px; }
+        td { padding: 12px 8px; border-bottom: 1px solid #eee; font-size: 13px; }
 
-        /* Footer/Grand Total */
         .bill-summary { background: #fff; border: 2px solid var(--primary); border-radius: 10px; margin-top: 20px; padding: 15px; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 15px; }
-        .grand-total { font-size: 20px; font-weight: bold; color: var(--primary); border-top: 1px solid #eee; pt: 8px; margin-top: 8px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .grand-total { font-size: 20px; font-weight: bold; color: var(--primary); border-top: 1px solid #eee; padding-top: 8px; }
 
-        /* Print/Receipt Layout */
         @media print {
-            .btn-add, .btn-print, .action-col, .input-area, label[for="qty"], label[for="rate"], #qty, #rate, #variety, #packing, .section-title:nth-of-type(2) { 
-                display: none !important; 
-            }
-            body { padding: 0; background: white; }
-            .container { box-shadow: none; padding: 0; }
-            .table-wrapper { border: none; overflow: visible; }
-            table { min-width: 100%; border: 1px solid #000; }
-            th, td { border: 1px solid #ddd; }
-            .header { border-bottom: 2px solid #000; }
-            .bill-summary { border: 1px solid #000; }
+            .btn-add, .btn-print, .action-col, .input-area, .section-title:nth-of-type(2) { display: none !important; }
+            .container { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+            table { border: 1px solid #000; }
         }
     </style>
 </head>
@@ -58,137 +49,36 @@
 <div class="container">
     <div class="header">
         <p class="shop-name">DD SEEDS KARNAL</p>
-        <p class="address">
-            VPO Shahpur Jajan, Tehsil Dera Baba Nanak<br>
-            Distt Gurdaspur - 143604 (Pb.)
-        </p>
-    </div>
-
-    <div class="section-title">Farmer Details</div>
-    <div class="grid-row">
-        <div class="form-group">
-            <input type="text" id="farmerName" placeholder="Farmer Name">
-        </div>
-        <div class="form-group">
-            <input type="text" id="village" placeholder="Village">
-        </div>
+        <p class="address">VPO Shahpur Jajan, Dera Baba Nanak<br>Gurdaspur - 143604 (Pb.)</p>
     </div>
 
     <div class="input-area">
+        <div class="section-title">Farmer Details</div>
+        <div class="grid-row">
+            <input type="text" id="farmerName" placeholder="Farmer Name">
+            <input type="text" id="village" placeholder="Village">
+        </div>
+
         <div class="section-title">Add Items</div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:10px;">
             <select id="variety">
                 <option value="" disabled selected>Select Variety</option>
                 <optgroup label="PR Varieties">
-                    <option>PR - 128</option><option>PR - 131</option>
-                    <option>110</option><option>HKR - 47</option>
+                    <option>PR - 128</option><option>PR - 131</option><option>110</option><option>HKR - 47</option>
                 </optgroup>
                 <optgroup label="Basmati Varieties">
-                    <option>PUSA Basmati 1121</option>
-                    <option>PUSA Basmati 1718</option>
-                    <option>PUSA Basmati 1692</option>
+                    <option>PUSA Basmati 1121</option><option>PUSA Basmati 1718</option><option>PUSA Basmati 1692</option>
                 </optgroup>
             </select>
         </div>
-        <div class="grid-row">
-            <div class="form-group">
-                <select id="packing">
-                    <option value="4">4 KG</option>
-                    <option value="10">10 KG</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="number" id="qty" placeholder="Bags">
-            </div>
-        </div>
-        <div class="form-group">
-            <input type="number" id="rate" placeholder="Rate Per KG (₹)">
-        </div>
-        <button class="btn-add" onclick="addItem()">+ Add To Bill</button>
-    </div>
-
-    <div class="table-wrapper">
-        <table id="billTable">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Weight</th>
-                    <th>Amount</th>
-                    <th class="action-col"></th>
-                </tr>
-            </thead>
-            <tbody id="billBody"></tbody>
-        </table>
-    </div>
-
-    <div class="bill-summary">
-        <div class="summary-row">
-            <span>Total Weight:</span>
-            <span id="finalWeight">0 KG</span>
-        </div>
-        <div class="summary-row grand-total">
-            <span>Grand Total:</span>
-            <span id="finalAmount">₹ 0.00</span>
-        </div>
-    </div>
-
-    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
-</div>
-
-<script>
-    let items = [];
-
-    function addItem() {
-        const variety = document.getElementById('variety').value;
-        const packing = parseFloat(document.getElementById('packing').value);
-        const qty = parseFloat(document.getElementById('qty').value) || 0;
-        const rate = parseFloat(document.getElementById('rate').value) || 0;
-
-        if(!variety || qty <= 0 || rate <= 0) {
-            alert("Variety, Qty aur Rate sahi bharein!");
-            return;
-        }
-
-        const totalWt = packing * qty;
-        const totalAmt = totalWt * rate;
-
-        items.push({ variety, packing, qty, totalWt, totalAmt });
-        updateTable();
         
-        // Reset only item fields
-        document.getElementById('qty').value = "";
-        document.getElementById('rate').value = "";
-    }
+        <div class="grid-row">
+            <select id="packing">
+                <option value="4">4 KG Packing</option>
+                <option value="10">10 KG Packing</option>
+            </select>
+            <input type="number" id="qty" placeholder="Bags Quantity">
+        </div>
 
-    function removeItem(index) {
-        items.splice(index, 1);
-        updateTable();
-    }
-
-    function updateTable() {
-        const tbody = document.getElementById('billBody');
-        tbody.innerHTML = "";
-        let gWeight = 0;
-        let gAmount = 0;
-
-        items.forEach((item, index) => {
-            gWeight += item.totalWt;
-            gAmount += item.totalAmt;
-
-            tbody.innerHTML += `<tr>
-                <td>${item.variety}<br><small>${item.packing}kg pack</small></td>
-                <td>${item.qty}</td>
-                <td>${item.totalWt}kg</td>
-                <td>₹${item.totalAmt.toFixed(2)}</td>
-                <td class="action-col"><button onclick="removeItem(${index})" style="background:none; border:none; color:red; font-size:18px;">✕</button></td>
-            </tr>`;
-        });
-
-        document.getElementById('finalWeight').innerText = gWeight + " KG";
-        document.getElementById('finalAmount').innerText = "₹ " + gAmount.toLocaleString('en-IN', {minimumFractionDigits: 2});
-    }
-</script>
-
-</body>
-</html>
+        <div class="form-group" style="margin-bottom:10px;">
+            
