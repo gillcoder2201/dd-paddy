@@ -3,33 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DD Seeds Karnal - Full History</title>
+    <title>DD Seeds Karnal - Billing System</title>
     <style>
         :root { --primary: #2e7d32; --secondary: #1976d2; --bg: #f8f9fa; }
-        body { font-family: -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 500px; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .header { text-align: center; border-bottom: 2px dashed #ddd; padding-bottom: 10px; margin-bottom: 15px; }
-        .shop-name { font-size: 24px; font-weight: bold; color: var(--primary); margin: 0; }
-        .section-title { font-size: 14px; font-weight: bold; margin: 15px 0 8px; border-left: 4px solid var(--primary); padding-left: 8px; }
-        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        input, select { height: 45px; border: 1px solid #ccc; border-radius: 8px; padding: 0 10px; font-size: 15px; width: 100%; box-sizing: border-box; }
-        .btn-add { background: var(--secondary); color: white; border: none; height: 48px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
-        .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; width: 100%; font-weight: bold; font-size: 18px; margin-top: 15px; cursor: pointer; }
-        .btn-clear { background: #f44336; color: white; border: none; height: 40px; border-radius: 8px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        body { font-family: -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .container { max-width: 500px; background: #fff; margin: auto; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); box-sizing: border-box; }
+        
+        .header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed #ddd; }
+        .shop-name { font-size: 24px; font-weight: 800; color: var(--primary); margin: 0; }
+        .address { font-size: 12px; color: #666; margin: 4px 0; line-height: 1.4; }
+
+        .section-title { font-size: 14px; font-weight: bold; color: #444; margin: 15px 0 8px 0; border-left: 4px solid var(--primary); padding-left: 8px; }
+        
+        /* Grid Fix for Mobile */
+        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        @media (max-width: 450px) { .grid-row { grid-template-columns: 1fr; } }
+        
+        .form-group { display: flex; flex-direction: column; width: 100%; }
+        label { font-size: 11px; font-weight: bold; color: #777; margin-bottom: 2px; text-transform: uppercase; }
+        input, select { height: 45px; border: 1px solid #ccc; border-radius: 8px; padding: 0 10px; font-size: 15px; box-sizing: border-box; width: 100%; outline: none; }
+
+        .btn-add { background: var(--secondary); color: white; border: none; height: 48px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        .btn-print { background: var(--primary); color: white; border: none; height: 55px; border-radius: 8px; font-weight: bold; font-size: 18px; width: 100%; margin-top: 15px; cursor: pointer; }
+        .btn-clear { background: #f44336; color: white; border: none; height: 40px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { background: #f4f4f4; padding: 10px; text-align: left; font-size: 12px; }
         td { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
-        
-        .bill-summary { border: 2px solid var(--primary); border-radius: 10px; padding: 15px; margin-top: 15px; }
+
+        .bill-summary { background: #fff; border: 2px solid var(--primary); border-radius: 10px; margin-top: 15px; padding: 15px; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 14px; }
         .grand-total { font-size: 20px; font-weight: bold; color: var(--primary); margin-top: 5px; }
 
-        /* History List Styling */
-        .history-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 10px; }
-        .history-card { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn-view { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; font-weight: bold; }
+        /* History Styling */
+        .history-section { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 15px; }
+        .history-card { background: #fff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .btn-view { background: #e3f2fd; color: #1976d2; border: 1px solid #1976d2; padding: 5px 8px; border-radius: 5px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-        @media print { .btn-add, .btn-print, .btn-clear, .action-col, .input-area, .history-section { display: none !important; } }
+        @media print {
+            .btn-add, .btn-print, .btn-clear, .action-col, .input-box, .history-section, .section-title:nth-of-type(2) { display: none !important; }
+            .container { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+        }
     </style>
 </head>
 <body>
@@ -37,30 +52,31 @@
 <div class="container">
     <div class="header">
         <p class="shop-name">DD SEEDS KARNAL</p>
-        <p style="font-size:11px; color:#666; margin:2px;">VPO Shahpur Jajan, Gurdaspur-143604</p>
+        <p class="address">VPO Shahpur Jajan, Tehsil Dera Baba Nanak<br>Distt Gurdaspur - 143604 (Pb.)</p>
     </div>
 
-    <div class="input-area">
+    <div class="input-box">
+        <div class="section-title">Bill & Farmer Details</div>
         <div class="grid-row">
-            <input type="number" id="billNo" placeholder="Bill No.">
-            <input type="date" id="billDate">
+            <div class="form-group"><label>Bill No.</label><input type="number" id="billNo"></div>
+            <div class="form-group"><label>Date</label><input type="date" id="billDate"></div>
         </div>
         <div class="grid-row">
-            <input type="text" id="farmerName" placeholder="Farmer Name">
-            <input type="text" id="village" placeholder="Village">
+            <div class="form-group"><label>Farmer Name</label><input type="text" id="fName" placeholder="Name"></div>
+            <div class="form-group"><label>Village</label><input type="text" id="fVillage" placeholder="Village"></div>
         </div>
 
-        <div class="section-title">Add Items</div>
+        <div class="section-title">Add Variety</div>
         <select id="variety" style="margin-bottom:10px;">
             <option value="" disabled selected>Select Variety</option>
             <optgroup label="PR Varieties"><option>PR - 128</option><option>PR - 131</option><option>110</option><option>HKR - 47</option></optgroup>
-            <optgroup label="Basmati Varieties"><option>PUSA Basmati 1121</option><option>PUSA Basmati 1718</option><option>PUSA Basmati 1692</option></optgroup>
+            <optgroup label="Basmati Varieties"><option>PUSA 1121</option><option>PUSA 1718</option><option>PUSA 1692</option></optgroup>
         </select>
         <div class="grid-row">
-            <select id="packing"><option value="4">4 KG</option><option value="10">10 KG</option></select>
-            <input type="number" id="qty" placeholder="Bags">
+            <div class="form-group"><label>Packing</label><select id="packing"><option value="4">4 KG</option><option value="10">10 KG</option></select></div>
+            <div class="form-group"><label>Bags</label><input type="number" id="qty" placeholder="0"></div>
         </div>
-        <input type="number" id="rate" placeholder="Rate Per KG" style="margin:10px 0;">
+        <div class="form-group" style="margin:10px 0;"><label>Rate/KG (₹)</label><input type="number" id="rate" placeholder="0.00"></div>
         <button class="btn-add" onclick="addItem()">+ Add To Bill</button>
     </div>
 
@@ -70,31 +86,27 @@
     </table>
 
     <div class="bill-summary">
-        <div style="display:flex; justify-content:space-between; font-size:14px;">
-            <span>Total Weight: <b id="finalWeight">0 KG</b></span>
-            <span class="grand-total" id="finalAmount">₹ 0.00</span>
-        </div>
+        <div class="summary-row"><span>Total Weight: <b id="dispWt">0 KG</b></span></div>
+        <div class="summary-row grand-total"><span>Grand Total:</span><span id="dispAmt">₹ 0.00</span></div>
     </div>
 
     <button class="btn-print" onclick="printAndSave()">Print & Save Full Bill</button>
-    <button class="btn-clear" onclick="clearBill()">New Bill (Reset)</button>
+    <button class="btn-clear" onclick="clearAll()">New Bill (Reset)</button>
 
     <div class="history-section">
-        <div class="section-title">Previous Bills (History)</div>
+        <div class="section-title">Bill History (Saved)</div>
         <div id="historyList"></div>
     </div>
 </div>
 
 <script>
-    let items = JSON.parse(localStorage.getItem('ddSeedsData')) || [];
-    let history = JSON.parse(localStorage.getItem('ddSeedsHistory')) || [];
+    let currentItems = [];
+    let billHistory = JSON.parse(localStorage.getItem('dd_history')) || [];
 
     window.onload = function() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('billDate').value = today;
-        document.getElementById('billNo').value = localStorage.getItem('fBillNo') || "1";
-        updateTable();
-        showHistory();
+        document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('billNo').value = localStorage.getItem('dd_lastNo') || "1";
+        renderHistory();
     };
 
     function addItem() {
@@ -102,77 +114,72 @@
         const p = parseFloat(document.getElementById('packing').value);
         const q = parseFloat(document.getElementById('qty').value) || 0;
         const r = parseFloat(document.getElementById('rate').value) || 0;
-        if(!v || q <= 0 || r <= 0) return alert("Details bharein!");
-        items.push({ variety: v, packing: p, qty: q, totalWt: p*q, totalAmt: (p*q)*r });
+        if(!v || q <= 0 || r <= 0) return alert("Sahi details bharein!");
+
+        currentItems.push({ v, p, q, wt: p*q, amt: (p*q)*r });
         updateTable();
+        document.getElementById('qty').value = ""; document.getElementById('rate').value = "";
     }
 
     function updateTable() {
         const tbody = document.getElementById('billBody'); tbody.innerHTML = "";
-        let gW = 0, gA = 0;
-        items.forEach((item, i) => {
-            gW += item.totalWt; gA += item.totalAmt;
-            tbody.innerHTML += `<tr><td>${item.variety}<br><small>${item.packing}kg</small></td><td>${item.qty}</td><td>${item.totalWt}kg</td><td>₹${item.totalAmt.toFixed(2)}</td><td class="action-col"><button onclick="removeItem(${i})" style="color:red; border:none; background:none;">✕</button></td></tr>`;
+        let tWt = 0, tAmt = 0;
+        currentItems.forEach((item, i) => {
+            tWt += item.wt; tAmt += item.amt;
+            tbody.innerHTML += `<tr><td>${item.v}<br><small>${item.p}kg</small></td><td>${item.q}</td><td>${item.wt}kg</td><td>₹${item.amt.toFixed(2)}</td><td class="action-col"><button onclick="removeItem(${i})" style="border:none; background:none; color:red;">✕</button></td></tr>`;
         });
-        document.getElementById('finalWeight').innerText = gW + " KG";
-        document.getElementById('finalAmount').innerText = "₹ " + gA.toLocaleString('en-IN', {minimumFractionDigits: 2});
-        localStorage.setItem('ddSeedsData', JSON.stringify(items));
+        document.getElementById('dispWt').innerText = tWt + " KG";
+        document.getElementById('dispAmt').innerText = "₹ " + tAmt.toLocaleString('en-IN');
     }
+
+    function removeItem(i) { currentItems.splice(i, 1); updateTable(); }
 
     function printAndSave() {
-        if(items.length === 0) return alert("Bill khali hai!");
+        if(currentItems.length === 0) return alert("Pehle item add karein!");
         
-        // Poora Bill Data Save Karein
-        const fullBill = {
-            id: Date.now(),
+        const bill = {
             no: document.getElementById('billNo').value,
             date: document.getElementById('billDate').value,
-            name: document.getElementById('farmerName').value || "Customer",
-            village: document.getElementById('village').value || "-",
-            items: [...items], // Sabhi items ki copy
-            total: document.getElementById('finalAmount').innerText
+            name: document.getElementById('fName').value || "Customer",
+            village: document.getElementById('fVillage').value || "-",
+            items: [...currentItems],
+            total: document.getElementById('dispAmt').innerText
         };
-        
-        history.unshift(fullBill);
-        localStorage.setItem('ddSeedsHistory', JSON.stringify(history));
+
+        billHistory.unshift(bill);
+        localStorage.setItem('dd_history', JSON.stringify(billHistory));
         window.print();
-        showHistory();
+        renderHistory();
     }
 
-    function showHistory() {
-        const hList = document.getElementById('historyList');
-        hList.innerHTML = history.length === 0 ? "<p style='text-align:center;color:#999;'>No history</p>" : "";
-        history.forEach((bill, index) => {
-            hList.innerHTML += `<div class="history-card">
-                <div><b>#${bill.no}</b> - ${bill.name}<br><small>${bill.date}</small></div>
-                <div style="text-align:right">
-                    <div style="font-weight:bold; color:var(--primary);">${bill.total}</div>
-                    <button class="btn-view" onclick="viewBill(${index})">View Bill</button>
-                </div>
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        list.innerHTML = billHistory.length === 0 ? "<p style='font-size:12px;color:#999;text-align:center;'>No history</p>" : "";
+        billHistory.forEach((b, i) => {
+            list.innerHTML += `<div class="history-card">
+                <div><b>#${b.no}</b> - ${b.name}<br><small>${b.date}</small></div>
+                <div style="text-align:right"><div>${b.total}</div><button class="btn-view" onclick="viewBill(${i})">View</button></div>
             </div>`;
         });
     }
 
-    function viewBill(index) {
-        const bill = history[index];
-        if(confirm("Purana Bill #" + bill.no + " load karein? Abhi wala data hat jayega.")) {
-            document.getElementById('billNo').value = bill.no;
-            document.getElementById('billDate').value = bill.date;
-            document.getElementById('farmerName').value = bill.name;
-            document.getElementById('village').value = bill.village;
-            items = [...bill.items];
+    function viewBill(i) {
+        const b = billHistory[i];
+        if(confirm("Bill #" + b.no + " load karein?")) {
+            document.getElementById('billNo').value = b.no;
+            document.getElementById('billDate').value = b.date;
+            document.getElementById('fName').value = b.name;
+            document.getElementById('fVillage').value = b.village;
+            currentItems = [...b.items];
             updateTable();
             window.scrollTo(0,0);
         }
     }
 
-    function removeItem(i) { items.splice(i, 1); updateTable(); }
-    
-    function clearBill() {
-        if(confirm("Naya bill?")) {
+    function clearAll() {
+        if(confirm("Saara data saaf karke naya bill shuru karein?")) {
             let next = parseInt(document.getElementById('billNo').value) + 1;
-            items = []; localStorage.removeItem('ddSeedsData');
-            localStorage.setItem('fBillNo', next);
+            localStorage.setItem('dd_lastNo', next);
             location.reload();
         }
     }
