@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -81,4 +81,61 @@
         </div>
 
         <div class="form-group" style="margin-bottom:10px;">
-            
+            <input type="number" id="rate" placeholder="Rate Per KG (₹)">
+        </div>
+        
+        <button class="btn-add" onclick="addItem()">+ Add To Bill</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Weight</th>
+                    <th>Total</th>
+                    <th class="action-col"></th>
+                </tr>
+            </thead>
+            <tbody id="billBody"></tbody>
+        </table>
+    </div>
+
+    <div class="bill-summary">
+        <div class="summary-row"><span>Total Weight:</span><span id="finalWeight">0 KG</span></div>
+        <div class="summary-row grand-total"><span>Grand Total:</span><span id="finalAmount">₹ 0.00</span></div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<script>
+    let items = [];
+    function addItem() {
+        const variety = document.getElementById('variety').value;
+        const packing = parseFloat(document.getElementById('packing').value);
+        const qty = parseFloat(document.getElementById('qty').value) || 0;
+        const rate = parseFloat(document.getElementById('rate').value) || 0;
+        if(!variety || qty <= 0 || rate <= 0) { alert("Sahi details bharein!"); return; }
+        const totalWt = packing * qty;
+        const totalAmt = totalWt * rate;
+        items.push({ variety, packing, qty, totalWt, totalAmt });
+        updateTable();
+        document.getElementById('qty').value = ""; document.getElementById('rate').value = "";
+    }
+    function removeItem(i) { items.splice(i, 1); updateTable(); }
+    function updateTable() {
+        const tbody = document.getElementById('billBody'); tbody.innerHTML = "";
+        let gW = 0, gA = 0;
+        items.forEach((item, i) => {
+            gW += item.totalWt; gA += item.totalAmt;
+            tbody.innerHTML += `<tr><td>${item.variety}<br><small>${item.packing}kg</small></td><td>${item.qty}</td><td>${item.totalWt}kg</td><td>₹${item.totalAmt.toFixed(2)}</td><td class="action-col"><button onclick="removeItem(${i})" style="border:none; background:none; color:red;">✕</button></td></tr>`;
+        });
+        document.getElementById('finalWeight').innerText = gW + " KG";
+        document.getElementById('finalAmount').innerText = "₹ " + gA.toLocaleString('en-IN', {minimumFractionDigits: 2});
+    }
+</script>
+</body>
+</html>
+
