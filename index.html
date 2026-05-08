@@ -42,3 +42,152 @@
 <div class="container">
     <div class="header">
         <p class="shop-name">DD SEEDS KARNAL</p>
+        <p class="address">VPO Shahpur Jajan, Gurdaspur, Punjab</p>
+    </div>
+
+    <div id="printHeader">
+        <h1 style="margin:0; color:#1b5e20;">DD SEEDS KARNAL</h1>
+        <p style="margin:5px 0; font-size:12px;">VPO Shahpur Jajan, Gurdaspur - 143604 (Pb.)</p>
+        <div class="print-info"><div id="pInfoLeft"></div><div id="pInfoRight"></div></div>
+    </div>
+
+    <div class="card input-area">
+        <div class="section-title">📄 Farmer & Payment</div>
+        <div class="grid-row">
+            <input type="number" id="billNo" placeholder="Bill No">
+            <input type="date" id="billDate">
+        </div>
+        <div class="grid-row">
+            <input type="text" id="fName" placeholder="Farmer Name">
+            <input type="text" id="fVillage" placeholder="Village">
+        </div>
+        <select id="payMode" style="margin-top:5px;">
+            <option value="Cash">CASH</option>
+            <option value="UPI">UPI / ONLINE</option>
+            <option value="Udhaar">UDHAAR</option>
+        </select>
+    </div>
+
+    <div class="card input-area">
+        <div class="section-title">🌾 Add Items</div>
+        <select id="variety" style="margin-bottom:10px;">
+            <option value="" disabled selected>Select Variety</option>
+            <optgroup label="PR Varieties">
+                <option>PR - 128</option>
+                <option>PR - 131</option>
+                <option>110</option>
+                <option>HKR - 47</option>
+            </optgroup>
+            <optgroup label="Basmati Varieties">
+                <option>PUSA Basmati 1121</option>
+                <option>PUSA Basmati 1718</option>
+                <option>PUSA Basmati 1692</option>
+                <option>PUSA Basmati 1509</option>
+            </optgroup>
+        </select>
+        <div class="grid-row">
+            <select id="packing"><option value="4">4 KG</option><option value="10">10 KG</option></select>
+            <input type="number" id="qty" placeholder="Bags">
+        </div>
+        <input type="number" id="rate" placeholder="Rate Per KG" style="margin-top:10px;">
+        <button class="btn btn-add" onclick="addItem()">+ ADD ITEM</button>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead><tr><th>ITEM</th><th>QTY</th><th>WT</th><th>TOTAL</th><th class="action-col"></th></tr></thead>
+            <tbody id="billBody"></tbody>
+        </table>
+    </div>
+
+    <div class="summary-box">
+        <span>Weight: <b id="dispWt">0 KG</b></span>
+        <span class="grand-total" id="dispAmt">₹ 0.00</span>
+        <div style="clear:both;"></div>
+    </div>
+
+    <div style="padding: 0 10px;">
+        <button class="btn btn-print" onclick="printAndSave()">PRINT & SAVE TO CLOUD</button>
+        <button class="btn btn-clear" onclick="clearCurrentBill()">NEW BILL</button>
+    </div>
+
+    <div class="card history-section" style="background:#f1f8e9;">
+        <div class="section-title">📂 RECENT SYNCED BILLS</div>
+        <div id="historyList">Syncing...</div>
+    </div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwXGu8lolMHtiLmls2lqUr7lpZ8VGBZzit9x-1-zb36oUtCQOnJC6dcUgQmjFqhqsD8/exec';
+
+    let currentItems = [];
+
+    window.onload = function() {
+        document.getElementById('billDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('billNo').value = localStorage.getItem('dd_lastNo') || "1";
+        loadHistory(); 
+    };
+
+    function addItem() {
+        const v = document.getElementById('variety').value;
+        const p = parseFloat(document.getElementById('packing').value);
+        const q = parseFloat(document.getElementById('qty').value) || 0;
+        const r = parseFloat(document.getElementById('rate').value) || 0;
+        if(!v || q <= 0 || r <= 0) return alert("Details bharein!");
+        currentItems.push({ v, p, q, wt: p*q, amt: (p*q)*r });
+        updateTable();
+    }
+
+    function updateTable() {
+        const tbody = document.getElementById('billBody'); tbody.innerHTML = "";
+        let tWt = 0, tAmt = 0;
+        currentItems.forEach((item, i) => {
+            tWt += item.wt; tAmt += item.amt;
+            tbody.innerHTML += `<tr><td><b>${item.v}</b></td><td>${item.q}</td><td>${item.wt}k</td><td>₹${item.amt.toFixed(2)}</td><td class="action-col"><button onclick="removeItem(${i})" style="border:none; background:none; color:red;">✕</button></td></tr>`;
+        });
+        document.getElementById('dispWt').innerText = tWt + " KG";
+        document.getElementById('dispAmt').innerText = "₹ " + tAmt.toLocaleString('en-IN');
+    }
+
+    function removeItem(i) { currentItems.splice(i, 1); updateTable(); }
+
+    async function printAndSave() {
+        if(currentItems.length === 0) return alert("Items add karein!");
+        const bNo = document.getElementById('billNo').value;
+        const bDate = document.getElementById('billDate').value;
+        const fName = document.getElementById('fName').value || "Customer";
+        const fVill = document.getElementById('fVillage').value || "-";
+        const pMode = document.getElementById('payMode').value;
+
+        document.getElementById('pInfoLeft').innerHTML = `Bill No: ${bNo}<br>Date: ${bDate}<br>Pay: ${pMode}`;
+        document.getElementById('pInfoRight').innerHTML = `Farmer: ${fName}<br>Village: ${fVill}`;
+
+        window.print();
+
+        const data = { no: bNo, date: bDate, name: fName, village: fVill, items: currentItems, total: document.getElementById('dispAmt').innerText };
+
+        try {
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            localStorage.setItem('dd_lastNo', parseInt(bNo) + 1);
+            location.reload();
+        } catch (e) { alert("Error! Sheet se connect nahi ho paya."); }
+    }
+
+    async function loadHistory() {
+        try {
+            const res = await fetch(scriptURL);
+            const data = await res.json();
+            const list = document.getElementById('historyList');
+            list.innerHTML = data.reverse().slice(0,10).map(b => `
+                <div style="background:white; padding:8px; margin-bottom:5px; border-radius:5px; font-size:12px; display:flex; justify-content:space-between; border-left:4px solid #1b5e20;">
+                    <div><b>#${b.no}</b> - ${b.name}</div>
+                    <div style="font-weight:bold;">${b.total}</div>
+                </div>
+            `).join('');
+        } catch (e) { document.getElementById('historyList').innerHTML = "History load nahi hui."; }
+    }
+
+    function clearCurrentBill() { if(confirm("Naya bill?")) location.reload(); }
+</script>
+</body>
+</html>
